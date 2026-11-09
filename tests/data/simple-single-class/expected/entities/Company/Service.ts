@@ -4,8 +4,6 @@
 
 import {
     Class,
-    odataEndpoint,
-    odataType,
     odataTypeKey,
     ODataRawType,
     createModel,

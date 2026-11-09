@@ -4,8 +4,6 @@
 
 import {
   Class,
-  odataEndpoint,
-  odataType,
   odataTypeKey,
   ODataRawType,
   createModel,
@@ -33,8 +31,8 @@ export class Base {
   ) { }
 }
 
-@odataEndpoint(Endpoints.Fizz)
 export class Bazz {
+  public static readonly ODataEndpoint = Endpoints.Fizz;
 
   public static create<TBazz extends Bazz = Bazz>(this: Class<TBazz>, raw: TBazz): TBazz {
     return new this(
@@ -59,8 +57,8 @@ export class Bazz {
   ) { }
 }
 
-@odataEndpoint(Endpoints.Foos)
 export class Foo {
+  public static readonly ODataEndpoint = Endpoints.Foos;
 
   public static create<TFoo extends Foo = Foo>(this: Class<TFoo>, raw: TFoo): TFoo {
     return new this(
@@ -100,9 +98,9 @@ export class Bar {
   ) { }
 }
 
-@odataEndpoint(Endpoints.Children)
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 export class ChildOne extends Base {
+  public static readonly ODataEndpoint = Endpoints.Children;
 
   public static create<TChildOne extends ChildOne = ChildOne>(this: Class<TChildOne>, raw: TChildOne): TChildOne {
     return new this(
@@ -250,7 +248,9 @@ export class BaseConfiguration {
     return ctor.create(raw);
   }
 
-  protected static canHandle(_odataType: string): boolean { return false; }
+  protected static canHandle(_odataType: string): boolean {
+    return false;
+  }
 
   public constructor(
     public BC1P1: number,
@@ -289,7 +289,9 @@ export abstract class DummyType {
     return ctor.create(raw);
   }
 
-  protected static canHandle(_odataType: string): boolean { return false; }
+  protected static canHandle(_odataType: string): boolean {
+    return false;
+  }
 
   protected constructor(
     public Dummy_Do_Not_Use?: string | null,
@@ -319,9 +321,17 @@ export abstract class BranchOneCondition extends DummyType {
   }
 }
 
-@odataType('#Company.FooService.B1BarCondition', $$DummyTypeTypes.B1BarCondition, '$$type')
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 export class B1BarCondition extends BranchOneCondition {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.B1BarCondition';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.B1BarCondition';
+
+  public get $$type() {
+    return $$DummyTypeTypes.B1BarCondition;
+  }
 
   public constructor(
     public B1C1P1: number,
@@ -349,9 +359,17 @@ export class B1BarCondition extends BranchOneCondition {
 
 }
 
-@odataType('#Company.FooService.B1FizzCondition', $$DummyTypeTypes.B1FizzCondition, '$$type')
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 export class B1FizzCondition extends BranchOneCondition {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.B1FizzCondition';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.B1FizzCondition';
+
+  public get $$type() {
+    return $$DummyTypeTypes.B1FizzCondition;
+  }
 
   public constructor(
     public B1C1P1: number,
@@ -379,9 +397,17 @@ export class B1FizzCondition extends BranchOneCondition {
 
 }
 
-@odataType('#Company.FooService.B1FooCondition', $$DummyTypeTypes.B1FooCondition, '$$type')
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 export class B1FooCondition extends BranchOneCondition {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.B1FooCondition';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.B1FooCondition';
+
+  public get $$type() {
+    return $$DummyTypeTypes.B1FooCondition;
+  }
 
   public constructor(
     public B1C1P1: number,
@@ -438,7 +464,9 @@ export abstract class StandardCondition {
     return ctor.create(raw);
   }
 
-  protected static canHandle(_odataType: string): boolean { return false; }
+  protected static canHandle(_odataType: string): boolean {
+    return false;
+  }
 
   protected constructor(
     public BC1P1: number,
@@ -446,9 +474,17 @@ export abstract class StandardCondition {
   ) { }
 }
 
-@odataType('#Company.FooService.BarCondition', $$StandardConditionTypes.BarCondition, '$$type')
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 export class BarCondition extends StandardCondition {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.BarCondition';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.BarCondition';
+
+  public get $$type() {
+    return $$StandardConditionTypes.BarCondition;
+  }
 
   public constructor(
     public BC1P1: number,
@@ -473,9 +509,17 @@ export class BarCondition extends StandardCondition {
 
 }
 
-@odataType('#Company.FooService.BarConfiguration', $$BaseConfigurationTypes.BarConfiguration, '$$type')
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 export class BarConfiguration extends BaseConfiguration {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.BarConfiguration';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.BarConfiguration';
+
+  public get $$type() {
+    return $$BaseConfigurationTypes.BarConfiguration;
+  }
 
   public constructor(
     public BC1P1: number,
@@ -500,9 +544,17 @@ export class BarConfiguration extends BaseConfiguration {
 
 }
 
-@odataType('#Company.FooService.BranchTwoCondition', $$DummyTypeTypes.BranchTwoCondition, '$$type')
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 export class BranchTwoCondition extends DummyType {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.BranchTwoCondition';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.BranchTwoCondition';
+
+  public get $$type() {
+    return $$DummyTypeTypes.BranchTwoCondition;
+  }
 
   public constructor(
     public B2C1P1: number,
@@ -524,9 +576,17 @@ export class BranchTwoCondition extends DummyType {
 
 }
 
-@odataType('#Company.FooService.FizzCondition', $$StandardConditionTypes.FizzCondition, '$$type')
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 export class FizzCondition extends StandardCondition {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.FizzCondition';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.FizzCondition';
+
+  public get $$type() {
+    return $$StandardConditionTypes.FizzCondition;
+  }
 
   public constructor(
     public BC1P1: number,
@@ -553,9 +613,17 @@ export class FizzCondition extends StandardCondition {
 
 }
 
-@odataType('#Company.FooService.FooCondition', $$StandardConditionTypes.FooCondition, '$$type')
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 export class FooCondition extends StandardCondition {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.FooCondition';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.FooCondition';
+
+  public get $$type() {
+    return $$StandardConditionTypes.FooCondition;
+  }
 
   public constructor(
     public BC1P1: number,
@@ -580,9 +648,17 @@ export class FooCondition extends StandardCondition {
 
 }
 
-@odataType('#Company.FooService.FooConfiguration', $$BaseConfigurationTypes.FooConfiguration, '$$type')
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 export class FooConfiguration extends BaseConfiguration {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.FooConfiguration';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.FooConfiguration';
+
+  public get $$type() {
+    return $$BaseConfigurationTypes.FooConfiguration;
+  }
 
   public constructor(
     public BC1P1: number,

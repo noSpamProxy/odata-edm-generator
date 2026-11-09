@@ -146,8 +146,6 @@ export const enum Endpoints {
 
 import {
     Class,
-    odataEndpoint,
-    odataType,
     odataTypeKey,
     ODataRawType,
     createModel,
@@ -156,8 +154,8 @@ import {
     Endpoints,
 } from '../../Endpoints.js';
 
-@odataEndpoint(Endpoints.foos)
 export class Foo {
+    public static readonly ODataEndpoint = Endpoints.foos;
 
     public static create<TFoo extends Foo = Foo>(this: Class<TFoo>, raw: TFoo): TFoo {
         return new this(
@@ -208,9 +206,9 @@ export class BaseOne {
     ) { }
 }
 
-@odataEndpoint(Endpoints.Children)
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 export class Child extends BaseOne {
+    public static readonly ODataEndpoint = Endpoints.Children;
 
     public static create<TChild extends Child = Child>(this: Class<TChild>, raw: TChild): TChild {
         return new this(
@@ -258,7 +256,9 @@ export class ComplexType1 {
         return ctor.create(raw);
     }
 
-    protected static canHandle(_odataType: string): boolean { return false; }
+    protected static canHandle(_odataType: string): boolean {
+        return false;
+    }
 
     public constructor(
         public prop11: number,
@@ -272,9 +272,17 @@ export interface ComplexType2 {
     prop23: boolean;
 }
 
-@odataType('#Awesome.Possum.ChildComplexType', $$ComplexType1Types.ChildComplexType, '$$type')
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 export class ChildComplexType extends ComplexType1 {
+    public static canHandle(odataType: string): boolean {
+        return odataType === '#Awesome.Possum.ChildComplexType';
+    }
+
+    public readonly '@odata.type'?: string = '#Awesome.Possum.ChildComplexType';
+
+    public get $$type() {
+        return $$ComplexType1Types.ChildComplexType;
+    }
 
     public constructor(
         public prop11: number,

@@ -4,8 +4,6 @@
 
 import {
   Class,
-  odataEndpoint,
-  odataType,
   odataTypeKey,
   ODataRawType,
   createModel,
@@ -14,8 +12,8 @@ import {
   Endpoints,
 } from '../../Endpoints.js';
 
-@odataEndpoint(Endpoints.Bars)
 export class Bar {
+  public static readonly ODataEndpoint = Endpoints.Bars;
 
   public static create<TBar extends Bar = Bar>(this: Class<TBar>, raw: TBar): TBar {
     return new this(
@@ -55,8 +53,8 @@ export class Base {
   ) { }
 }
 
-@odataEndpoint(Endpoints.Fizz)
 export class Bazz {
+  public static readonly ODataEndpoint = Endpoints.Fizz;
 
   public static create<TBazz extends Bazz = Bazz>(this: Class<TBazz>, raw: TBazz): TBazz {
     return new this(
@@ -92,9 +90,9 @@ export class Foo {
   ) { }
 }
 
-@odataEndpoint(Endpoints.Children)
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 export class Child extends Base {
+  public static readonly ODataEndpoint = Endpoints.Children;
 
   public static create<TChild extends Child = Child>(this: Class<TChild>, raw: TChild): TChild {
     return new this(
