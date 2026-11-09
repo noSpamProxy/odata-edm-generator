@@ -1,5 +1,0 @@
-*.cjs
-*.d.ts
-*.js
-*.mjs
-/tests/data

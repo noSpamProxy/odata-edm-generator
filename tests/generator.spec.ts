@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { assert } from 'chai';
@@ -102,7 +101,6 @@ describe('generator', function () {
           epInput = await mockFs.bypass(() => exists(epInput)) ? epInput : inputDir;
 
           const edmxXml = await mockFs.bypass(() => fs.readFile(join(epInput, 'metadata.xml'), 'utf8'));
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
           const endpoints: Endpoint[] = JSON.parse(await mockFs.bypass(() => fs.readFile(join(epInput, 'endpoints.json'), 'utf8'))).value;
 
           // act

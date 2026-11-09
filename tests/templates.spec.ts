@@ -6,6 +6,7 @@ import { Configuration } from '../dist/cli/configuration.js';
 import { ClassInfo, EdmInfo, EnumInfo, ComplexTypeInfo, PropertyInfo, ComplexTypeInfoSet } from '../dist/cli/shared.js';
 import { EdmTemplate, EndpointTemplate } from '../dist/cli/templates.js';
 import { standardEndpoints } from './data.js';
+
 describe('templates', function () {
 
   describe('EndpointTemplate', function () {

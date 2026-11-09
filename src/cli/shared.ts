@@ -167,7 +167,6 @@ export class EdmInfo {
         return;
       }
       if (((type = complexTypes.find((c) => c.name === typeStr))?.derivedTypes.length ?? 0) > 0) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         lookup.set(typeStr, prop.type = type!);
         return;
       }

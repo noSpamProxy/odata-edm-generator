@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { promises as fs } from 'fs';
 import { isAbsolute, resolve } from 'path';
 import { EndpointConfiguration, Logger } from './shared.js';

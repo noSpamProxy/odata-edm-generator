@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { promises as fs } from 'fs';
 import { dirname } from 'path';
 // eslint-disable-next-line @typescript-eslint/no-shadow

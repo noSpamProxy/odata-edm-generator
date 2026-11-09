@@ -11,6 +11,7 @@
     "stripInternal": true,
     "removeComments": true,
     "skipLibCheck": true,
+    "types": ["node", "mocha"],
   },
   "include": [
     "src",

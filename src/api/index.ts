@@ -84,5 +84,5 @@ export function createModel<M, T extends ModelInstance<M> | null | undefined>(mo
   if (rawOrInstance === null || rawOrInstance === undefined || rawOrInstance instanceof (modelClass as unknown as Class<M>)) {
     return rawOrInstance;
   }
-  return (modelClass as ModelClass<T>).create(rawOrInstance) as T;
+  return (modelClass as ModelClass<T>).create(rawOrInstance);
 }
