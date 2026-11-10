@@ -1,7 +1,7 @@
 /.eslint*
 /.github*
-/.husky
 /.vscode*
+/eslint.config.mjs
 /tests
-/tests_out
 /tsconfig*
+/vitest.config.ts
