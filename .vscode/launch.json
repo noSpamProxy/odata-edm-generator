@@ -2,11 +2,10 @@
   "configurations": [
     {
       "name": "run tests",
-      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
       "request": "launch",
       "args": [
-        "--config",
-        "./tests/.mocharc.js",
+        "run"
       ],
       "internalConsoleOptions": "openOnSessionStart",
       "type": "pwa-node",

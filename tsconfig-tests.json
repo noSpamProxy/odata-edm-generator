@@ -1,8 +1,10 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "rootDir": "tests",
-    "outDir": "tests_out"
+    "noEmit": true,
+    "paths": {
+      "@netatwork/odata-edm-generator": ["./src/api/index.ts"]
+    }
   },
   "include": [
     "tests"

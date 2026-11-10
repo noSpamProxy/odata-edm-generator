@@ -1,8 +1,8 @@
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
 import { isAbsolute, resolve } from 'path';
-import { EndpointConfiguration, Logger } from './shared.js';
-import { exists as exists } from './file-system-helper.js';
 import { pathToFileURL } from 'url';
+import { exists } from './file-system-helper.js';
+import { EndpointConfiguration, Logger } from './shared.js';
 
 export class Configuration {
 

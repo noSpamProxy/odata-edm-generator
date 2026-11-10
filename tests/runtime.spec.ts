@@ -1,5 +1,5 @@
 import { createModel, ODataEntity, ODataRawType, odataTypeKey } from '@netatwork/odata-edm-generator';
-import { assert } from 'chai';
+import { assert, describe, it } from 'vitest';
 import * as FooService from './data/multiple-endpoints/expected/foo/entities/Company/FooService.js';
 
 describe('runtime', function () {

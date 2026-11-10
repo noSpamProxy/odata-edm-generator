@@ -1,8 +1,7 @@
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
 import { dirname } from 'path';
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { DOMParser, MIME_TYPE, type Element as XmlElement } from '@xmldom/xmldom';
-import { exists } from './file-system-helper.js';
 import { ClassInfo, ComplexTypeInfo, ComplexTypeInfoSet, EdmInfo, Endpoint, EndpointConfiguration, EnumInfo, getEndpointsPath, Logger, propertyComparator, PropertyInfo } from './shared.js';
 import { EdmTemplate, EndpointTemplate } from './templates.js';
 
@@ -97,9 +96,7 @@ export class $Generator {
   public async generateEndpointsFile(endpoints: Endpoint[], configuration: EndpointConfiguration): Promise<void> {
     const path = getEndpointsPath(configuration);
     const dirName = dirname(path);
-    if (!await exists(dirName)) {
-      await fs.mkdir(dirName, { recursive: true });
-    }
+    await fs.mkdir(dirName, { recursive: true });
     await fs.writeFile(path, this.endpointTemplate.render(endpoints));
   }
 
@@ -167,9 +164,7 @@ export class $Generator {
     const filePath = edmInfo.filePath;
 
     const dirName = dirname(filePath);
-    if (!await exists(dirName)) {
-      await fs.mkdir(dirName, { recursive: true });
-    }
+    await fs.mkdir(dirName, { recursive: true });
 
     const template = this.edmTemplate;
     const content = template.render(edmInfo);

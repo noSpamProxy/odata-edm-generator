@@ -1,10 +1,10 @@
-import { assert } from 'chai';
-import mockFs from 'mock-fs';
-import { join } from 'path';
-import { v4 as uuid } from 'uuid';
-import { Configuration } from '../dist/cli/configuration.js';
-import { ClassInfo, EdmInfo, EnumInfo, ComplexTypeInfo, PropertyInfo, ComplexTypeInfoSet } from '../dist/cli/shared.js';
-import { EdmTemplate, EndpointTemplate } from '../dist/cli/templates.js';
+import { vol } from 'memfs';
+import { randomUUID } from 'node:crypto';
+import { join } from 'node:path';
+import { assert, describe, it } from 'vitest';
+import { Configuration } from '../src/cli/configuration.js';
+import { ClassInfo, ComplexTypeInfo, ComplexTypeInfoSet, EdmInfo, EnumInfo, PropertyInfo } from '../src/cli/shared.js';
+import { EdmTemplate, EndpointTemplate } from '../src/cli/templates.js';
 import { standardEndpoints } from './data.js';
 
 describe('templates', function () {
@@ -46,8 +46,8 @@ export const enum Endpoints {
   describe('EdmTemplate', function () {
     it('Renders correctly', async function () {
       try {
-        const basePath = join(process.cwd(), uuid());
-        mockFs({ [basePath]: {} }, { createCwd: true });
+        const basePath = join(process.cwd(), randomUUID());
+        vol.mkdirSync(basePath, { recursive: true });
         const config = await Configuration.createFromCLIArgs(['--outputDir', basePath, '--endpoint', 'https://api.example.com']);
 
         const base1 = new ClassInfo(
@@ -321,7 +321,6 @@ export enum EnumTwo {
 `        );
       } finally {
         Configuration.dispose();
-        mockFs.restore();
       }
     });
   });
