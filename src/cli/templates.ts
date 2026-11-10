@@ -41,13 +41,13 @@ const defaultClassTemplateName = '@$$class';
 const defaultClassTemplate = `<%-
   const indent = it.indent;
 -%>
-<%- if (it.endpoint) { -%>
-@odataEndpoint(Endpoints.<%= it.endpoint %>)
-<% } -%>
 <%- if (it.baseType && it.propertyInfos.length > it.baseType.propertyInfos.length) { -%>
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 <% } -%>
 export class <%= it.name %><% if (it.baseType) { %> extends <%= it.baseType.name %><% } %> {
+<% if (it.endpoint) { -%>
+<%= indent %>public static readonly ODataEndpoint = Endpoints.<%= it.endpoint %>;
+<% } -%>
 
 <%= indent %>public static create<T<%= it.name %> extends <%= it.name %> = <%= it.name %>>(this: Class<T<%= it.name %>>, raw: T<%= it.name %>): T<%= it.name %> {
 <%= indent.repeat(2) %>return new this(
@@ -115,7 +115,9 @@ export<% if(isAbstract) { %> abstract<% } %> class <%= name %> {
 <%= indent.repeat(2) %>return ctor.create(raw);
 <%= indent %>}
 
-<%= indent %>protected static canHandle(_odataType: string): boolean { return false; }
+<%= indent %>protected static canHandle(_odataType: string): boolean {
+<%= indent.repeat(2) %>return false;
+<%= indent %>}
 
 <%= indent %><% if(isAbstract) { %>protected<% } else { %>public<% } %> constructor(
 <% for(const p of it.propertyInfos) { -%>
@@ -125,10 +127,20 @@ export<% if(isAbstract) { %> abstract<% } %> class <%= name %> {
 }
 <%- } else if (baseType !== null) { -%>
 <% if (!isAbstract) { -%>
-@odataType(<%= quote %>#<%= it.namespace %>.<%= name %><%= quote %>, $$<%= it.rootType.name %>Types.<%= name %>, <%= quote %>$$type<%= quote %>)
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 <% } -%>
 export<% if(isAbstract) { %> abstract<% } %> class <%= name %> extends <%= baseType.name %> {
+<% if (!isAbstract) { -%>
+<%= indent %>public static canHandle(odataType: string): boolean {
+<%= indent.repeat(2) %>return odataType === <%= quote %>#<%= it.namespace %>.<%= name %><%= quote %>;
+<%= indent %>}
+
+<%= indent %>public readonly <%= quote %>@odata.type<%= quote %>?: string = <%= quote %>#<%= it.namespace %>.<%= name %><%= quote %>;
+
+<%= indent %>public get $$type() {
+<%= indent.repeat(2) %>return $$<%= it.rootType.name %>Types.<%= name %>;
+<%= indent %>}
+<% } -%>
 
 <%= indent %><% if(isAbstract) { %>protected<% } else { %>public<% } %> constructor(
 <% for(const p of it.propertyInfos) { -%>

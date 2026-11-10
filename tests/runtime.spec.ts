@@ -1,5 +1,5 @@
-import { createModel, ODataRawType, odataTypeKey } from '@netatwork/odata-edm-generator';
-import { assert } from 'chai';
+import { createModel, ODataEntity, ODataRawType, odataTypeKey } from '@netatwork/odata-edm-generator';
+import { assert, describe, it } from 'vitest';
 import * as FooService from './data/multiple-endpoints/expected/foo/entities/Company/FooService.js';
 
 describe('runtime', function () {
@@ -59,6 +59,49 @@ describe('runtime', function () {
 
       const clone = FooService.ChildOne.create(instance);
       assert.strictEqual(clone.Condition, instance.Condition);
+    });
+
+    it('entity endpoint metadata', function () {
+      assert.strictEqual((FooService.Bazz as ODataEntity<unknown>).ODataEndpoint, 'FizzBazz');
+      assert.strictEqual((FooService.ChildOne as ODataEntity<unknown>).ODataEndpoint, 'Children');
+      assert.strictEqual((FooService.Base as Partial<ODataEntity<unknown>>).ODataEndpoint, undefined);
+    });
+
+    it('complex type canHandle', function () {
+      const type = '#Company.FooService.BarCondition';
+      assert.isTrue(FooService.BarCondition.canHandle(type));
+      assert.isFalse(FooService.BarCondition.canHandle('#Other'));
+      assert.isFalse(FooService.BarCondition.canHandle(undefined as unknown as string));
+      assert.isTrue(FooService.FizzCondition.canHandle('#Company.FooService.FizzCondition'));
+      assert.isFalse(FooService.StandardCondition['canHandle'](type));
+      assert.isFalse(FooService.StandardCondition['canHandle'](undefined as unknown as string));
+    });
+
+    it('complex type instances', function () {
+      const instance = FooService.BarCondition.create<FooService.BarCondition>({ BC1P1: 1, CBC1P1: 2 } as FooService.BarCondition);
+      assert.strictEqual((instance as ODataRawType<typeof instance>)[odataTypeKey], '#Company.FooService.BarCondition');
+      assert.strictEqual(instance.$$type, FooService.$$StandardConditionTypes.BarCondition);
+      assert.isFalse(Object.keys(instance).includes('$$type'));
+      assert.isTrue(Object.keys(instance).includes(odataTypeKey));
+    });
+
+    it('serializes the odata type but not the friendly type', function () {
+      const instance = FooService.ChildOne.create({
+        BaseProp12: 1,
+        BaseProp13: '2',
+        ChildId: 4,
+        ChildProp12: 5,
+        ChildProp13: '6',
+        Condition: { [odataTypeKey]: '#Company.FooService.BarCondition', BC1P1: 7, CBC1P1: 9 } as ODataRawType<FooService.BarCondition>,
+      });
+      assert.deepStrictEqual(JSON.parse(JSON.stringify(instance)), {
+        BaseProp12: 1,
+        BaseProp13: '2',
+        ChildId: 4,
+        ChildProp12: 5,
+        ChildProp13: '6',
+        Condition: { [odataTypeKey]: '#Company.FooService.BarCondition', BC1P1: 7, CBC1P1: 9 },
+      });
     });
   });
 

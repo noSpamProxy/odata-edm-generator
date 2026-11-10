@@ -1,8 +1,8 @@
-import { assert } from 'chai';
-import mockFs from 'mock-fs';
-import { join } from 'path';
-import { Configuration } from '../dist/cli/configuration.js';
-import { EndpointConfiguration } from '../dist/cli/shared.js';
+import { vol } from 'memfs';
+import { join } from 'node:path';
+import { assert, describe, it } from 'vitest';
+import { Configuration } from '../src/cli/configuration.js';
+import { EndpointConfiguration } from '../src/cli/shared.js';
 
 describe('configuration', function () {
   class TestData {
@@ -58,15 +58,14 @@ describe('configuration', function () {
     it(`createFromCLIArgs works correctly - ${data.toString()}`, async function () {
       try {
         const expectedOutputPath = data.expected.outputDir;
-        mockFs({
-          ...(expectedOutputPath ? { [expectedOutputPath]: {} } : {})
-        }, { createCwd: true });
+        if (expectedOutputPath) {
+          vol.mkdirSync(expectedOutputPath, { recursive: true });
+        }
 
         const actual = await Configuration.createFromCLIArgs(data.args);
         assert.deepStrictEqual(JSON.parse(JSON.stringify(actual)), data.expected);
       } finally {
         Configuration.dispose();
-        mockFs.restore();
       }
     });
   }

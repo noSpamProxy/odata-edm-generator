@@ -1,24 +1,9 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { promises as fs } from 'fs';
-import { EOL } from 'os';
+import { promises as fs } from 'node:fs';
 import { dirname } from 'path';
 // eslint-disable-next-line @typescript-eslint/no-shadow
-import { DOMParser, MIME_TYPE } from '@xmldom/xmldom';
-import {
-  ClassInfo,
-  EdmInfo,
-  Endpoint,
-  EndpointConfiguration,
-  EnumInfo,
-  getEndpointsPath,
-  ComplexTypeInfo,
-  Logger,
-  propertyComparator,
-  PropertyInfo,
-  ComplexTypeInfoSet,
-} from './shared.js';
+import { DOMParser, MIME_TYPE, type Element as XmlElement } from '@xmldom/xmldom';
+import { ClassInfo, ComplexTypeInfo, ComplexTypeInfoSet, EdmInfo, Endpoint, EndpointConfiguration, EnumInfo, getEndpointsPath, Logger, propertyComparator, PropertyInfo } from './shared.js';
 import { EdmTemplate, EndpointTemplate } from './templates.js';
-import { exists } from './file-system-helper.js';
 
 // interface ImportInfo { ns: string; type: string; }
 
@@ -62,7 +47,7 @@ function getType(originalType: string/* , imports: ImportInfo[] */) {
 }
 
 const enCollator = new Intl.Collator('en');
-function compareTypes(e1: Element, e2: Element) {
+function compareTypes(e1: XmlElement, e2: XmlElement) {
   const baseType1 = e1.getAttribute('BaseType');
   const baseType2 = e2.getAttribute('BaseType');
   if (baseType1 && !baseType2) { return 1; }
@@ -70,7 +55,7 @@ function compareTypes(e1: Element, e2: Element) {
   return enCollator.compare(e1.getAttribute('Name')!, e2.getAttribute('Name')!);
 }
 
-function getMembers(properties: Element[], /* imports: ImportInfo[], */ keys: string[] = []) {
+function getMembers(properties: XmlElement[], /* imports: ImportInfo[], */ keys: string[] = []) {
   return properties
     .map((property) => {
       const name = property.getAttribute('Name')!;
@@ -85,7 +70,7 @@ function getMembers(properties: Element[], /* imports: ImportInfo[], */ keys: st
     .sort(propertyComparator);
 }
 
-function getBaseTypeName(type: Element) {
+function getBaseTypeName(type: XmlElement) {
   return (type.getAttribute('BaseType') || null)
     ?.split('.')
     ?.pop();
@@ -99,9 +84,8 @@ export class $Generator {
     const parsed = new DOMParser()
       .parseFromString(metadata, MIME_TYPE.XML_APPLICATION)
       .documentElement;
-    const error = Array.from(parsed.getElementsByTagName('parsererror'));
-    if (error.length !== 0) {
-      throw new Error(`Error parsing the edmx xml.${EOL}Parsing error: ${error.map((e) => e.outerHTML).join(EOL)}`);
+    if (parsed === null) {
+      throw new Error('Error parsing the edmx xml.');
     }
     const edmInfo = this.generateCodeContent(parsed, endpoints, configuration);
     if (edmInfo !== null) {
@@ -112,13 +96,11 @@ export class $Generator {
   public async generateEndpointsFile(endpoints: Endpoint[], configuration: EndpointConfiguration): Promise<void> {
     const path = getEndpointsPath(configuration);
     const dirName = dirname(path);
-    if (!await exists(dirName)) {
-      await fs.mkdir(dirName, { recursive: true });
-    }
+    await fs.mkdir(dirName, { recursive: true });
     await fs.writeFile(path, this.endpointTemplate.render(endpoints));
   }
 
-  private generateStringEnum(acc: EnumInfo[], enumType: Element, ignored: string[]): EnumInfo[] {
+  private generateStringEnum(acc: EnumInfo[], enumType: XmlElement, ignored: string[]): EnumInfo[] {
     const name = enumType.getAttribute('Name')!;
     if (ignored.includes(name)) { return acc; }
     const members = Array.from(enumType.getElementsByTagName('Member')).map((m) => m.getAttribute('Name')!);
@@ -127,7 +109,7 @@ export class $Generator {
   }
 
   private generateCodeContent(
-    edmxNode: HTMLElement,
+    edmxNode: XmlElement,
     endpoints: Endpoint[],
     configuration: EndpointConfiguration,
   ): EdmInfo | null {
@@ -182,9 +164,7 @@ export class $Generator {
     const filePath = edmInfo.filePath;
 
     const dirName = dirname(filePath);
-    if (!await exists(dirName)) {
-      await fs.mkdir(dirName, { recursive: true });
-    }
+    await fs.mkdir(dirName, { recursive: true });
 
     const template = this.edmTemplate;
     const content = template.render(edmInfo);
@@ -192,7 +172,7 @@ export class $Generator {
   }
 
   private generateEntityInfo(
-    entityType: Element,
+    entityType: XmlElement,
     // imports: ImportInfo[],
     endpoints: Endpoint[],
     endpointImports: string[],
@@ -251,8 +231,8 @@ export class $Generator {
 
   private generateComplexTypeInfo(
     acc: ComplexTypeInfoSet,
-    entityType: Element,
-    complexTypes: Element[],
+    entityType: XmlElement,
+    complexTypes: XmlElement[],
     ignored: string[],
     /* , imports: ImportInfo[] */
   ): ComplexTypeInfoSet {

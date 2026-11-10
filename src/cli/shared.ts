@@ -139,7 +139,7 @@ export class EdmInfo {
     //   .sort(([p1,], [p2,]) => p1 < p2 ? -1 : 1)
     //   .map(([nsPath, imports]) => new ImportDirectiveInfo(nsPath, imports));
     this.importDirectives = [
-      new ImportDirectiveInfo('@netatwork/odata-edm-generator', ['Class', 'odataEndpoint', 'odataType', 'odataTypeKey', 'ODataRawType', 'createModel']),
+      new ImportDirectiveInfo('@netatwork/odata-edm-generator', ['Class', 'odataTypeKey', 'ODataRawType', 'createModel']),
       new ImportDirectiveInfo(
         relative(dirname(filePath), getEndpointsPath(configuration))
           .replace(/\\/g, '/')
@@ -167,7 +167,6 @@ export class EdmInfo {
         return;
       }
       if (((type = complexTypes.find((c) => c.name === typeStr))?.derivedTypes.length ?? 0) > 0) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         lookup.set(typeStr, prop.type = type!);
         return;
       }
