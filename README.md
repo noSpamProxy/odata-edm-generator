@@ -336,8 +336,6 @@ export const enum Endpoints {
 
 import {
   Class,
-  odataEndpoint,
-  odataType,
   odataTypeKey,
   createModel,
 } from '@netatwork/odata-edm-generator';
@@ -365,8 +363,8 @@ export class Base {
   ) { }
 }
 
-@odataEndpoint(Endpoints.Fizz)
 export class Bazz {
+  public static readonly ODataEndpoint = Endpoints.Fizz;
 
   public static create<TBazz extends Bazz = Bazz>(this: Class<TBazz>, raw: Partial<TBazz>): TBazz {
     if (raw === undefined || raw === null || raw instanceof this) { return raw as TBazz; }
@@ -392,8 +390,8 @@ export class Bazz {
   ) { }
 }
 
-@odataEndpoint(Endpoints.Foos)
 export class Foo {
+  public static readonly ODataEndpoint = Endpoints.Foos;
 
   public static create<TFoo extends Foo = Foo>(this: Class<TFoo>, raw: Partial<TFoo>): TFoo {
     if (raw === undefined || raw === null || raw instanceof this) { return raw as TFoo; }
@@ -435,9 +433,9 @@ export class Bar {
   ) { }
 }
 
-@odataEndpoint(Endpoints.Children)
 // @ts-ignore needed to avoid this issue: https://github.com/microsoft/TypeScript/issues/4628
 export class ChildOne extends Base {
+  public static readonly ODataEndpoint = Endpoints.Children;
 
   public static create<TChildOne extends ChildOne = ChildOne>(this: Class<TChildOne>, raw: Partial<TChildOne>): TChildOne {
     if (raw === undefined || raw === null || raw instanceof this) { return raw as TChildOne; }
@@ -587,7 +585,9 @@ export class BaseConfiguration {
     return result;
   }
 
-  protected static canHandle(_odataType: string): boolean { return false; }
+  protected static canHandle(_odataType: string): boolean {
+    return false;
+  }
 
   public BC1P1: number;
   public BC1P2?: string;
@@ -628,7 +628,9 @@ export class DummyType {
     return result;
   }
 
-  protected static canHandle(_odataType: string): boolean { return false; }
+  protected static canHandle(_odataType: string): boolean {
+    return false;
+  }
 
   public Dummy_Do_Not_Use?: string;
 
@@ -659,8 +661,16 @@ export class BranchOneCondition extends DummyType {
   }
 }
 
-@odataType('#Company.FooService.B1BarCondition', $$DummyTypeTypes.B1BarCondition, '$$type')
 export class B1BarCondition extends BranchOneCondition {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.B1BarCondition';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.B1BarCondition';
+
+  public get $$type() {
+    return $$DummyTypeTypes.B1BarCondition;
+  }
 
   public CBC1P1: number;
   public CBC1P2?: Interface1;
@@ -672,8 +682,16 @@ export class B1BarCondition extends BranchOneCondition {
   }
 }
 
-@odataType('#Company.FooService.B1FizzCondition', $$DummyTypeTypes.B1FizzCondition, '$$type')
 export class B1FizzCondition extends BranchOneCondition {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.B1FizzCondition';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.B1FizzCondition';
+
+  public get $$type() {
+    return $$DummyTypeTypes.B1FizzCondition;
+  }
 
   public FC1P1: number;
   public FC1P2?: Interface1;
@@ -685,8 +703,16 @@ export class B1FizzCondition extends BranchOneCondition {
   }
 }
 
-@odataType('#Company.FooService.B1FooCondition', $$DummyTypeTypes.B1FooCondition, '$$type')
 export class B1FooCondition extends BranchOneCondition {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.B1FooCondition';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.B1FooCondition';
+
+  public get $$type() {
+    return $$DummyTypeTypes.B1FooCondition;
+  }
 
   public FC1P1: number;
   public FC1P2?: Enum1;
@@ -726,7 +752,9 @@ export class StandardCondition {
     return result;
   }
 
-  protected static canHandle(_odataType: string): boolean { return false; }
+  protected static canHandle(_odataType: string): boolean {
+    return false;
+  }
 
   public BC1P1: number;
   public BC1P2?: string;
@@ -737,8 +765,16 @@ export class StandardCondition {
   }
 }
 
-@odataType('#Company.FooService.BarCondition', $$StandardConditionTypes.BarCondition, '$$type')
 export class BarCondition extends StandardCondition {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.BarCondition';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.BarCondition';
+
+  public get $$type() {
+    return $$StandardConditionTypes.BarCondition;
+  }
 
   public CBC1P1: number;
   public CBC1P2?: Interface1;
@@ -750,8 +786,16 @@ export class BarCondition extends StandardCondition {
   }
 }
 
-@odataType('#Company.FooService.BarConfiguration', $$BaseConfigurationTypes.BarConfiguration, '$$type')
 export class BarConfiguration extends BaseConfiguration {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.BarConfiguration';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.BarConfiguration';
+
+  public get $$type() {
+    return $$BaseConfigurationTypes.BarConfiguration;
+  }
 
   public CBC1P1: number;
   public CBC1P2?: Interface1;
@@ -763,8 +807,16 @@ export class BarConfiguration extends BaseConfiguration {
   }
 }
 
-@odataType('#Company.FooService.BranchTwoCondition', $$DummyTypeTypes.BranchTwoCondition, '$$type')
 export class BranchTwoCondition extends DummyType {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.BranchTwoCondition';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.BranchTwoCondition';
+
+  public get $$type() {
+    return $$DummyTypeTypes.BranchTwoCondition;
+  }
 
   public B2C1P1: number;
   public B2C1P2?: string;
@@ -776,8 +828,16 @@ export class BranchTwoCondition extends DummyType {
   }
 }
 
-@odataType('#Company.FooService.FizzCondition', $$StandardConditionTypes.FizzCondition, '$$type')
 export class FizzCondition extends StandardCondition {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.FizzCondition';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.FizzCondition';
+
+  public get $$type() {
+    return $$StandardConditionTypes.FizzCondition;
+  }
 
   public FC1P1: number;
   public FC1P2?: Interface1;
@@ -791,8 +851,16 @@ export class FizzCondition extends StandardCondition {
   }
 }
 
-@odataType('#Company.FooService.FooCondition', $$StandardConditionTypes.FooCondition, '$$type')
 export class FooCondition extends StandardCondition {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.FooCondition';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.FooCondition';
+
+  public get $$type() {
+    return $$StandardConditionTypes.FooCondition;
+  }
 
   public FC1P1: number;
   public FC1P2?: Enum1;
@@ -804,8 +872,16 @@ export class FooCondition extends StandardCondition {
   }
 }
 
-@odataType('#Company.FooService.FooConfiguration', $$BaseConfigurationTypes.FooConfiguration, '$$type')
 export class FooConfiguration extends BaseConfiguration {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.FooConfiguration';
+  }
+
+  public readonly '@odata.type'?: string = '#Company.FooService.FooConfiguration';
+
+  public get $$type() {
+    return $$BaseConfigurationTypes.FooConfiguration;
+  }
 
   public FC1P1: number;
   public FC1P2?: Enum1;
@@ -825,32 +901,36 @@ export enum Enum1 {
 ```
 </details>
 
-## Decorators
+## Class metadata
 
-If you have seen the generated example above, you can see the decorators: `@odataEndpoint`, and `@odataType`.
+If you have seen the generated example above, you can see that the generated classes define static members that associate metadata with the class: `ODataEndpoint` for entities, and `canHandle` for complex types.
+The type `ODataEntity` describes the entity property.
+They are plain static literals and methods, so that unused classes can still be removed by tree shaking.
 
-### `@odataEndpoint`
+### `ODataEndpoint`
 
-It defines a static property on the class named `ODataEndpoint` that associate the entity endpoint with the class.
+This associates the entity endpoint with the class.
 This is useful when you want to retrieve the entity endpoint inside your generic HTTP pipeline (service class).
 
 **Example:**
 
 ```ts
-@odataEndpoint(Endpoints.People)
-public class Person {
+export class Person {
+  public static readonly ODataEndpoint = Endpoints.People;
   //...
 }
 ```
 
-### `@odataType`
+### `canHandle`
 
-This is another utility decorator that maps the raw OData type with the generated class.
-Additionally it also add a friendly enum type to the class.
+Each complex type class has a static `canHandle` method that returns `true` only for its own raw OData type.
+The base class uses it in `create` to pick the matching derived class.
+Additionally the class has a `$$type` getter that returns a friendly enum type.
 The value of the enum can be used conveniently instead of checking the raw odata type or using the `instanceof` operator (motivation: `instanceof` is slower than equality check).
 
+The class also has an optional `@odata.type` instance property that is initialized from `ODataType`.
 This is particularly useful when dealing with hierarchical complex types.
-Because as the raw OData datatype gets associated, any serialized JSON of an instance of the generated class contains the OData type annotation, which helps the server to deserialize the data correctly.
+Because any serialized JSON of an instance of the generated class contains the OData type annotation, which helps the server to deserialize the data correctly.
 
 **Example:**
 
@@ -865,19 +945,36 @@ export class StandardCondition {
   // omitted for brevity; refer example above.
 }
 
-@odataType('#Company.FooService.BarCondition', $$StandardConditionTypes.BarCondition, '$$type')
 export class BarCondition extends StandardCondition {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.BarCondition';
+  }
+
+  public get $$type() {
+    return $$StandardConditionTypes.BarCondition;
+  }
   // omitted for brevity; refer example above.
 }
 
-@odataType('#Company.FooService.FizzCondition', $$StandardConditionTypes.FizzCondition, '$$type')
 export class FizzCondition extends StandardCondition {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.FizzCondition';
+  }
+
+  public get $$type() {
+    return $$StandardConditionTypes.FizzCondition;
+  }
   // omitted for brevity; refer example above.
 }
 
-
-@odataType('#Company.FooService.FooCondition', $$StandardConditionTypes.FooCondition, '$$type')
 export class FooCondition extends StandardCondition {
+  public static canHandle(odataType: string): boolean {
+    return odataType === '#Company.FooService.FooCondition';
+  }
+
+  public get $$type() {
+    return $$StandardConditionTypes.FooCondition;
+  }
   // omitted for brevity; refer example above.
 }
 
